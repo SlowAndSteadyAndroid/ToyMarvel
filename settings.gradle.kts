@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         gradlePluginPortal()
         google()
@@ -13,4 +14,5 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "ToyMarvel"
-include ':app'
+include(":app")
+include(":core-ui")
