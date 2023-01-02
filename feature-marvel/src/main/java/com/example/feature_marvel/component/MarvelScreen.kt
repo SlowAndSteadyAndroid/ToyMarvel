@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -26,7 +27,7 @@ fun MarvelScreen(item: CharacterItem, onItemClick: (CharacterItem) -> Unit) {
             .height(200.dp)
             .padding(20.dp)
             .clickable {
-
+                onItemClick(item)
             },
         horizontalArrangement = Arrangement.Start
     ) {
@@ -58,13 +59,16 @@ fun MarvelScreen(item: CharacterItem, onItemClick: (CharacterItem) -> Unit) {
                 text = item.name,
                 style = MaterialTheme.typography.subtitle1,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = if(item.isBookmark) Color.Red else Color.Black
             )
 
-            Spacer(modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.LightGray)
-                .height(1.dp))
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.LightGray)
+                    .height(1.dp)
+            )
 
             Row(
                 modifier = Modifier

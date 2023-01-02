@@ -1,19 +1,28 @@
 package com.example.feature_marvel.bookmark
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.core_common.Result
+import com.example.core_common.asResult
+import com.example.core_data.repo.MarvelRepository
+import com.example.core_database.room.entity.MarvelEntity
+import com.example.core_model.marvel.model.CharacterItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MarvelBookmarkViewModel @Inject constructor() : ViewModel() {
+class MarvelBookmarkViewModel @Inject constructor(private val marvelRepository: MarvelRepository) :
+    ViewModel() {
 
+    val getBookmarkItemStream: Flow<Result<List<MarvelEntity>>> =
+        marvelRepository.bookmarkList.asResult()
 
-    private val _inputState = mutableStateOf("안녕2")
-    val inputState: State<String> = _inputState
-
-    fun clickButton(){
-        _inputState.value = "버튼클릭2"
+    fun deleteBookmark(item: CharacterItem) {
+        viewModelScope.launch(Dispatchers.IO) {
+            marvelRepository.deleteCharacterItem(item)
+        }
     }
 }

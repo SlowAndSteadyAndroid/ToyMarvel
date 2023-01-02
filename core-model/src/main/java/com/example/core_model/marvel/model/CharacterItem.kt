@@ -10,7 +10,8 @@ data class CharacterItem(
     val series: Int,
     val stories: Int,
     val events: Int,
-    val urls: Int
+    val urls: Int,
+    var isBookmark: Boolean
 )
 
 
@@ -23,8 +24,8 @@ fun Results<Roles, Urls>.CharacterItem(): CharacterItem =
         series.available,
         stories.available,
         events.available,
-        if (urls.isNotEmpty()) urls.size else 0
+        if (urls.isNotEmpty()) urls.size else 0,
+        false
     )
-
 
 

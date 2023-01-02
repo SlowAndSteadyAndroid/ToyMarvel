@@ -9,7 +9,9 @@ import com.example.core_database.room.entity.MarvelEntity
 import com.example.core_model.marvel.model.CharacterItem
 import com.example.core_model.marvel.response.CharacterResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -33,7 +35,15 @@ class MarvelListViewModel @Inject constructor(private val marvelRepository: Marv
             if (getAllCharactersResult is Result.Success &&
                 getBookmarkItemResult is Result.Success
             ) {
-                MarvelListUiViewState.Success(getAllCharactersResult.data.data.results.map { it.CharacterItem() })
+
+                val getCharacterItem =
+                    getAllCharactersResult.data.data.results.map { it.CharacterItem() }
+
+                getCharacterItem.forEach { item ->
+                    item.isBookmark = getBookmarkItemResult.data.map { it.id }.contains(item.id)
+                }
+
+                MarvelListUiViewState.Success(getCharacterItem)
             } else if (getAllCharactersResult is Result.Loading ||
                 getBookmarkItemResult is Result.Loading
             ) {
@@ -46,5 +56,18 @@ class MarvelListViewModel @Inject constructor(private val marvelRepository: Marv
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = MarvelListUiViewState.Loading
         )
+
+
+    fun addBookmark(item: CharacterItem) {
+        viewModelScope.launch(IO) {
+            marvelRepository.insertCharacterItem(item)
+        }
+    }
+
+    fun deleteBookmark(item: CharacterItem) {
+        viewModelScope.launch(IO) {
+            marvelRepository.deleteCharacterItem(item)
+        }
+    }
 
 }

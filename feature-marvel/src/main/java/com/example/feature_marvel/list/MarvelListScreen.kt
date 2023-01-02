@@ -34,8 +34,10 @@ fun MarvelListScreen(viewModel: MarvelListViewModel = hiltViewModel()) {
             is MarvelListUiViewState.Success -> {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(result.items) { item ->
-                        Log.d("결과",item.image)
-                        MarvelScreen(item = item, onItemClick = {})
+                        MarvelScreen(
+                            item = item,
+                            onItemClick = if (item.isBookmark) viewModel::deleteBookmark else viewModel::addBookmark
+                        )
                     }
                 }
             }
