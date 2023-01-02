@@ -2,7 +2,7 @@ plugins {
     id("toymarvel.android.library")
     id("toymarvel.android.library.compose")
     kotlin("kapt")
-    id("dagger.hilt.android.plugin")
+    alias(libs.plugins.ksp)
 }
 
 dependencies {
@@ -11,11 +11,14 @@ dependencies {
     implementation(project(":core-navigation"))
     implementation(project(":core-common"))
     implementation(project(":core-data"))
+    implementation(project(":core-database"))
+    implementation(project(":core-model"))
 
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
-    implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.kotlinx.coroutines.android)
 
