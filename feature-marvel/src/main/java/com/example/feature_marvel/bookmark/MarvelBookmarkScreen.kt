@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -26,7 +27,7 @@ fun MarvelBookmarkScreen(viewModel: MarvelBookmarkViewModel = hiltViewModel()) {
     Box(modifier = Modifier.fillMaxSize()) {
         when (val result = state.value) {
             is Result.Error -> {
-
+                Text(text = "에러가 발생하였습니다.", modifier = Modifier.align(Alignment.Center))
             }
 
             is Result.Loading -> {
@@ -36,13 +37,17 @@ fun MarvelBookmarkScreen(viewModel: MarvelBookmarkViewModel = hiltViewModel()) {
                         .semantics { testTag = "progress" })
             }
             is Result.Success -> {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(result.data) { item ->
-                        MarvelScreen(
-                            item = item.asCharacterItem(isBookmark = true),
-                            onItemClick = viewModel::deleteBookmark
-                        )
+                if (result.data.isNotEmpty()) {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(result.data) { item ->
+                            MarvelScreen(
+                                item = item.asCharacterItem(isBookmark = true),
+                                onItemClick = viewModel::deleteBookmark
+                            )
+                        }
                     }
+                } else {
+                    Text(text = "추가된 즐겨찾기가 없습니다.", modifier = Modifier.align(Alignment.Center))
                 }
             }
         }

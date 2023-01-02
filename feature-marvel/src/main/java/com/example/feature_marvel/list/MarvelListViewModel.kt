@@ -37,7 +37,7 @@ class MarvelListViewModel @Inject constructor(private val marvelRepository: Marv
             ) {
 
                 val getCharacterItem =
-                    getAllCharactersResult.data.data.results.map { it.CharacterItem() }
+                    getAllCharactersResult.data.data.results.map { it.CharacterItem(false) }
 
                 getCharacterItem.forEach { item ->
                     item.isBookmark = getBookmarkItemResult.data.map { it.id }.contains(item.id)

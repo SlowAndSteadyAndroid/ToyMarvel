@@ -15,7 +15,7 @@ data class CharacterItem(
 )
 
 
-fun Results<Roles, Urls>.CharacterItem(): CharacterItem =
+fun Results<Roles, Urls>.CharacterItem(isBookmark: Boolean): CharacterItem =
     CharacterItem(
         id = id,
         name = name,
@@ -25,7 +25,7 @@ fun Results<Roles, Urls>.CharacterItem(): CharacterItem =
         stories.available,
         events.available,
         if (urls.isNotEmpty()) urls.size else 0,
-        false
+        isBookmark
     )
 
 
