@@ -1,7 +1,6 @@
 plugins {
     id("toymarvel.android.library")
     kotlin("kapt")
-    id("dagger.hilt.android.plugin")
 }
 
 

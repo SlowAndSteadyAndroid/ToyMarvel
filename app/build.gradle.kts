@@ -24,6 +24,10 @@ android {
         }
     }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.androidxComposeCompiler.get()
+    }
+
     packagingOptions {
         resources {
             excludes.add("/META-INF/{AL2.0,LGPL2.1}")
@@ -51,4 +55,5 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     kaptAndroidTest(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 }
