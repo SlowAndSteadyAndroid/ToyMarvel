@@ -11,17 +11,16 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-@InstallIn(SingletonComponent::class)
 @Module
-class RoomModule {
+@InstallIn(SingletonComponent::class)
+class DatabaseModule {
 
     @Provides
     @Singleton
     fun provideMarvelDatabase(@ApplicationContext context: Context): MarvelDatabase =
-        Room.databaseBuilder(context, MarvelDatabase::class.java, "marvel_tabel").build()
+        Room.databaseBuilder(context, MarvelDatabase::class.java, "marvel_table").build()
 
     @Provides
-    @Singleton
     fun provideMarvelDao(@ApplicationContext context: Context): MarvelDao =
         provideMarvelDatabase(context).marvelDao()
 

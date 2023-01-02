@@ -5,7 +5,8 @@ import androidx.room.RoomDatabase
 import com.example.core_database.room.dao.MarvelDao
 import com.example.core_database.room.entity.MarvelEntity
 
-@Database(entities = [MarvelEntity::class], version = 1)
+
+@Database(entities = [MarvelEntity::class], version = 2)
 abstract class MarvelDatabase : RoomDatabase(){
     abstract fun marvelDao() : MarvelDao
 }

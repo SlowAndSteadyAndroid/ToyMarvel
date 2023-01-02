@@ -2,13 +2,11 @@
 plugins {
     id("toymarvel.android.library")
     kotlin("kapt")
-    id("dagger.hilt.android.plugin")
     alias(libs.plugins.ksp)
 }
 
 dependencies {
 
-    implementation(libs.kotlinx.coroutines.android)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
