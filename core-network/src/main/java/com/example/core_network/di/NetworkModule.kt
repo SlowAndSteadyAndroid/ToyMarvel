@@ -16,13 +16,4 @@ interface NetworkModule {
         marvelNetwork: RetrofitMarvelNetwork
     ): MarvelApi
 
-    @Binds
-    fun bindHttpClient(
-        httpClientImpl: HttpClientImpl
-    ): HttpClient
-
-    @Binds
-    fun bindSerializableConverterFactory(
-        serializableConverterFactoryImpl: SerializableConverterFactoryImpl
-    ): SerializableConverterFactory
 }

@@ -1,6 +1,6 @@
 package com.example.core_network.retrofit
 
-import com.example.core_network.api.CharacterResponse
+import com.example.core_model.marvel.response.CharacterResponse
 import com.example.core_network.api.MarvelApi
 import com.example.core_network.constant.Constant
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
@@ -10,38 +10,38 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Query
 import javax.inject.Inject
 import javax.inject.Singleton
 
 
 private interface RetrofitMarvelApi {
-
+    @GET(Constant.URL_MARVEL_CHARACTERS)
+    suspend fun getAllCharacters(
+        @Query("offset") offset: Int,
+        @Query("limit") limit: Int? = Constant.LIMIT_SIZE
+    ): CharacterResponse
 }
 
 
 @Singleton
-class RetrofitMarvelNetwork @Inject constructor(
-    private val httpClient: HttpClient,
-    private val converterFactory: SerializableConverterFactory
-) :
-    MarvelApi {
+class RetrofitMarvelNetwork @Inject constructor() : MarvelApi {
 
     private val networkApi =
         Retrofit.Builder().baseUrl(Constant.URL_BASE_MARVEL)
-            .addConverterFactory(converterFactory.provideSerializableConverterFactory())
-            .client(httpClient.provideHttpClient()).build()
+            .addConverterFactory(ConverterFactoryUtil.provideSerializableConverterFactory())
+            .client(HttpClientUtil.provideHttpClient()).build()
             .create(RetrofitMarvelApi::class.java)
 
-    override suspend fun getAllCharacters(offset: Int, limit: Int): CharacterResponse {
-        TODO("Not yet implemented")
-    }
+
+    override suspend fun getAllCharacters(offset: Int, limit: Int): CharacterResponse =
+        networkApi.getAllCharacters(offset, limit)
 }
 
-@Singleton
-class HttpClientImpl : HttpClient {
+object HttpClientUtil {
 
-    override fun provideHttpClient(): OkHttpClient {
+    fun provideHttpClient(): OkHttpClient {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
 
@@ -63,23 +63,13 @@ class HttpClientImpl : HttpClient {
     }
 }
 
-interface HttpClient {
-    fun provideHttpClient(): OkHttpClient
-}
+object ConverterFactoryUtil {
 
-
-@Singleton
-class SerializableConverterFactoryImpl : SerializableConverterFactory {
-
-    override fun provideSerializableConverterFactory(): Converter.Factory {
+    fun provideSerializableConverterFactory(): Converter.Factory {
         val json = Json {
             ignoreUnknownKeys = true
             prettyPrint = true
         }
         return json.asConverterFactory("application/json".toMediaTypeOrNull()!!)
     }
-}
-
-interface SerializableConverterFactory {
-    fun provideSerializableConverterFactory(): Converter.Factory
 }
