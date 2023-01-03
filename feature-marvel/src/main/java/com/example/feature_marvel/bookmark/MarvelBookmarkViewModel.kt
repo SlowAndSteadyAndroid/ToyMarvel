@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.core_common.Result
 import com.example.core_common.asResult
 import com.example.core_data.repo.MarvelRepository
-import com.example.core_database.room.entity.MarvelEntity
+import com.example.core_model.marvel.entity.MarvelEntity
 import com.example.core_model.marvel.model.CharacterItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

@@ -14,8 +14,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.core_common.Result
-import com.example.core_database.room.entity.MarvelEntity
-import com.example.core_model.marvel.model.CharacterItem
+import com.example.core_model.marvel.ext.asCharacterItem
 import com.example.feature_marvel.component.MarvelScreen
 
 @Composable
@@ -53,6 +52,3 @@ fun MarvelBookmarkScreen(viewModel: MarvelBookmarkViewModel = hiltViewModel()) {
         }
     }
 }
-
-fun MarvelEntity.asCharacterItem(isBookmark: Boolean): CharacterItem =
-    CharacterItem(id, name, image, comics, series, stories, events, urls, isBookmark)

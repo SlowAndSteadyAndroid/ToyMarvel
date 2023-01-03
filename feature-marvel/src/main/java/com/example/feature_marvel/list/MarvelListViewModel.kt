@@ -1,17 +1,22 @@
 package com.example.feature_marvel.list
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core_common.Result
 import com.example.core_common.asResult
 import com.example.core_data.repo.MarvelRepository
-import com.example.core_database.room.entity.MarvelEntity
+import com.example.core_model.marvel.entity.MarvelEntity
 import com.example.core_model.marvel.model.CharacterItem
-import com.example.core_model.marvel.response.CharacterResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 
@@ -19,44 +24,78 @@ import javax.inject.Inject
 class MarvelListViewModel @Inject constructor(private val marvelRepository: MarvelRepository) :
     ViewModel() {
 
-    private val getAllCharactersStream: Flow<Result<CharacterResponse>> =
-        marvelRepository.getAllCharacters(0).asResult()
+    private val _state = mutableStateOf(MarvelListUiViewState())
+    val state: State<MarvelListUiViewState> get() = _state
 
+    private val characterLinkedHashMap = LinkedHashMap<Int, CharacterItem>()
+    private var offset = INIT_OFFSET
+    private var isEndPosition = AtomicBoolean(false)
+
+
+    private val getAllCharactersStream = { offset: Int ->
+        marvelRepository.getAllCharacters(offset, LIMIT).asResult()
+    }
 
     private val getBookmarkItemStream: Flow<Result<List<MarvelEntity>>> =
         marvelRepository.bookmarkList.asResult()
 
-    val uiState: StateFlow<MarvelListUiViewState> =
-        combine(
-            getAllCharactersStream,
-            getBookmarkItemStream
-        ) { getAllCharactersResult, getBookmarkItemResult ->
+    init {
+        getCharacters(offset)
+    }
 
-            if (getAllCharactersResult is Result.Success &&
-                getBookmarkItemResult is Result.Success
-            ) {
+    private fun getCharacters(offset: Int) {
+        viewModelScope.launch(IO) {
+            combine(
+                getAllCharactersStream(offset),
+                getBookmarkItemStream
+            ) { getAllCharactersResult, getBookmarkItemResult ->
 
-                val getCharacterItem =
-                    getAllCharactersResult.data.data.results.map { it.CharacterItem(false) }
+                if (getAllCharactersResult is Result.Success &&
+                    getBookmarkItemResult is Result.Success
+                ) {
+                    //Get Items
+                    val getCharacterItem =
+                        getAllCharactersResult.data.data.results.map { it.CharacterItem(false) }
 
-                getCharacterItem.forEach { item ->
-                    item.isBookmark = getBookmarkItemResult.data.map { it.id }.contains(item.id)
+                    //Convert Bookmark and Cache
+                    getCharacterItem.forEach { item ->
+                        item.isBookmark =
+                            getBookmarkItemResult.data.map { it.id }.contains(item.id)
+                        characterLinkedHashMap[item.id] = item
+                    }
+
+                    //check end
+                    val message =
+                        if (getAllCharactersResult.data.data.total <= this@MarvelListViewModel.offset) "마지막 페이지 입니다."
+                        else EMPTY_MESSAGE
+
+                    onChangeViewState(MarvelListUiViewState(
+                        message = message,
+                        items = characterLinkedHashMap.map { it.value }
+                    ))
+                } else if (getAllCharactersResult is Result.Loading ||
+                    getBookmarkItemResult is Result.Loading
+                ) {
+                    onChangeViewState(
+                        MarvelListUiViewState(
+                            items = characterLinkedHashMap.map { it.value },
+                            isLoading = true
+                        )
+                    )
+                } else {
+                    onChangeViewState(MarvelListUiViewState(message = "예기치 못한 에러가 발생하였습니다."))
                 }
+            }.launchIn(this)
+        }
+    }
 
-                MarvelListUiViewState.Success(getCharacterItem)
-            } else if (getAllCharactersResult is Result.Loading ||
-                getBookmarkItemResult is Result.Loading
-            ) {
-                MarvelListUiViewState.Loading
-            } else {
-                MarvelListUiViewState.Error
-            }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = MarvelListUiViewState.Loading
-        )
-
+    fun isScrolledToTheEnd(isEnd: Boolean) {
+        if (isEnd) {
+            nextPage()
+        } else {
+            setIsEndPosition(false)
+        }
+    }
 
     fun addBookmark(item: CharacterItem) {
         viewModelScope.launch(IO) {
@@ -68,6 +107,42 @@ class MarvelListViewModel @Inject constructor(private val marvelRepository: Marv
         viewModelScope.launch(IO) {
             marvelRepository.deleteCharacterItem(item)
         }
+    }
+
+    fun swipeRefresh() {
+        viewModelScope.launch {
+            onChangeViewState(MarvelListUiViewState(swipeRefresh = true))
+            delay(REFRESH_DELAY_TIME)
+            offset = INIT_OFFSET
+            characterLinkedHashMap.clear()
+            getCharacters(offset)
+        }
+    }
+
+    private fun nextPage() {
+        if (!isEndPosition.get()) {
+            setIsEndPosition(true)
+            offset += LIMIT
+            getCharacters(offset = offset)
+        }
+    }
+
+    private fun setIsEndPosition(isEnd: Boolean) {
+        isEndPosition.set(isEnd)
+    }
+
+    private fun onChangeViewState(viewState: MarvelListUiViewState) {
+        viewModelScope.launch {
+            _state.value = viewState
+        }
+    }
+
+
+    companion object {
+        private const val INIT_OFFSET = 0
+        private const val LIMIT = 20
+        private const val EMPTY_MESSAGE = ""
+        private const val REFRESH_DELAY_TIME = 1000L
     }
 
 }

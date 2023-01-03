@@ -4,8 +4,9 @@ import com.example.core_model.marvel.model.CharacterItem
 
 
 
-sealed interface MarvelListUiViewState {
-    object Loading : MarvelListUiViewState
-    data class Success(val items: List<CharacterItem>) : MarvelListUiViewState
-    object Error : MarvelListUiViewState
-}
+data class MarvelListUiViewState(
+    val isLoading: Boolean = false,
+    val items: List<CharacterItem> = emptyList(),
+    val message: String = "",
+    val swipeRefresh: Boolean = false
+)
