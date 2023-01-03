@@ -23,7 +23,11 @@ import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.coil.CoilImage
 
 @Composable
-fun MarvelScreen(item: CharacterItem, onItemClick: (CharacterItem) -> Unit) {
+fun MarvelScreen(
+    item: CharacterItem,
+    onItemClick: (CharacterItem) -> Unit,
+    onSaveImage: (CharacterItem) -> Unit
+) {
 
     Row(
         modifier = Modifier
@@ -35,7 +39,8 @@ fun MarvelScreen(item: CharacterItem, onItemClick: (CharacterItem) -> Unit) {
         CoilImage(
             modifier = Modifier
                 .fillMaxHeight()
-                .weight(3f),
+                .weight(3f)
+                .clickable { onSaveImage(item) },
             imageModel = item.image,
             shimmerParams = ShimmerParams(
                 baseColor = MaterialTheme.colors.background,

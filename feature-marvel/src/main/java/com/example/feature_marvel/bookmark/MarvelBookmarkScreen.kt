@@ -41,7 +41,8 @@ fun MarvelBookmarkScreen(viewModel: MarvelBookmarkViewModel = hiltViewModel()) {
                         items(result.data) { item ->
                             MarvelScreen(
                                 item = item.asCharacterItem(isBookmark = true),
-                                onItemClick = viewModel::deleteBookmark
+                                onItemClick = viewModel::deleteBookmark,
+                                onSaveImage = {}
                             )
                         }
                     }

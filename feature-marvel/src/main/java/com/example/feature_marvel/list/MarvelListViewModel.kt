@@ -1,5 +1,6 @@
 package com.example.feature_marvel.list
 
+import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -9,7 +10,10 @@ import com.example.core_common.asResult
 import com.example.core_data.repo.MarvelRepository
 import com.example.core_model.marvel.entity.MarvelEntity
 import com.example.core_model.marvel.model.CharacterItem
+import com.example.feature_marvel.util.MediaUtil.Companion.getBitmapFromUrl
+import com.example.feature_marvel.util.MediaUtil.Companion.saveToGallery
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +25,10 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class MarvelListViewModel @Inject constructor(private val marvelRepository: MarvelRepository) :
+class MarvelListViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val marvelRepository: MarvelRepository
+) :
     ViewModel() {
 
     private val _state = mutableStateOf(MarvelListUiViewState())
@@ -118,6 +125,29 @@ class MarvelListViewModel @Inject constructor(private val marvelRepository: Marv
             getCharacters(offset)
         }
     }
+
+    fun saveDialogProcess(item: CharacterItem) {
+        onChangeViewState(
+            MarvelListUiViewState(
+                items = characterLinkedHashMap.map { it.value },
+                isLoading = true
+            )
+        )
+        with(context) {
+            getBitmapFromUrl(item.image) { bitmap ->
+                bitmap?.saveToGallery(this)
+            }
+        }
+
+        onChangeViewState(
+            MarvelListUiViewState(
+                items = characterLinkedHashMap.map { it.value },
+                isLoading = false
+            )
+        )
+
+    }
+
 
     private fun nextPage() {
         if (!isEndPosition.get()) {

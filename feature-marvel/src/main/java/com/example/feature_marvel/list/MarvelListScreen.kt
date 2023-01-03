@@ -33,7 +33,8 @@ fun MarvelListScreen(viewModel: MarvelListViewModel = hiltViewModel()) {
                 items(state.items) { item ->
                     MarvelScreen(
                         item = item,
-                        onItemClick = if (item.isBookmark) viewModel::deleteBookmark else viewModel::addBookmark
+                        onItemClick = if (item.isBookmark) viewModel::deleteBookmark else viewModel::addBookmark,
+                        onSaveImage = viewModel::saveDialogProcess
                     )
                 }
             }
