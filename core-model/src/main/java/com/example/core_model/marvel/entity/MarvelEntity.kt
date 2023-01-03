@@ -1,4 +1,4 @@
-package com.example.core_database.room.entity
+package com.example.core_model.marvel.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

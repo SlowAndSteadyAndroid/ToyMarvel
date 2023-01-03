@@ -7,4 +7,5 @@ plugins {
 dependencies {
     implementation(libs.kotlinx.serialization.converter)
     implementation(libs.serialization.json)
+    implementation(libs.androidx.room.runtime)
 }
