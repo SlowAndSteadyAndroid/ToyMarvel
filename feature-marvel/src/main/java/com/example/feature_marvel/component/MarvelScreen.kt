@@ -2,15 +2,19 @@ package com.example.feature_marvel.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,10 +29,7 @@ fun MarvelScreen(item: CharacterItem, onItemClick: (CharacterItem) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
-            .padding(20.dp)
-            .clickable {
-                onItemClick(item)
-            },
+            .padding(20.dp),
         horizontalArrangement = Arrangement.Start
     ) {
         CoilImage(
@@ -60,7 +61,6 @@ fun MarvelScreen(item: CharacterItem, onItemClick: (CharacterItem) -> Unit) {
                 style = MaterialTheme.typography.subtitle1,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                color = if(item.isBookmark) Color.Red else Color.Black
             )
 
             Spacer(
@@ -103,7 +103,25 @@ fun MarvelScreen(item: CharacterItem, onItemClick: (CharacterItem) -> Unit) {
             }
 
         }
-    }
 
+        Column(
+            Modifier
+                .weight(1.5f)
+                .padding(5.dp)
+                .fillMaxHeight(.6f)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) { onItemClick(item) },
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Favorite,
+                contentDescription = "bookmark",
+                tint = if (item.isBookmark) Color.Red else Color.LightGray
+            )
+        }
+    }
 
 }
