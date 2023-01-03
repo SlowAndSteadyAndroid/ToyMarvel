@@ -1,7 +1,7 @@
 package com.example.core_database.room.dao
 
 import androidx.room.*
-import com.example.core_database.room.entity.MarvelEntity
+import com.example.core_model.marvel.entity.MarvelEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
