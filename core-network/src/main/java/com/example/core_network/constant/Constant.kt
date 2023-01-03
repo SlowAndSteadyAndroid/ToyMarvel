@@ -6,6 +6,4 @@ object Constant {
 
     const val URL_BASE_MARVEL = "http://gateway.marvel.com/"
     const val URL_MARVEL_CHARACTERS = "v1/public/characters"
-
-    const val LIMIT_SIZE = 20
 }

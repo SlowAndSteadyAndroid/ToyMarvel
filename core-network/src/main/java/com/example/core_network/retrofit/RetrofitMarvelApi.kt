@@ -20,7 +20,7 @@ private interface RetrofitMarvelApi {
     @GET(Constant.URL_MARVEL_CHARACTERS)
     suspend fun getAllCharacters(
         @Query("offset") offset: Int,
-        @Query("limit") limit: Int? = Constant.LIMIT_SIZE
+        @Query("limit") limit: Int
     ): CharacterResponse
 }
 
