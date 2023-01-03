@@ -1,7 +1,8 @@
 package com.example.core_data.repo
 
 import com.example.core_database.room.dao.MarvelDao
-import com.example.core_database.room.entity.MarvelEntity
+import com.example.core_model.marvel.entity.MarvelEntity
+import com.example.core_model.marvel.ext.asCharacterEntity
 import com.example.core_model.marvel.model.CharacterItem
 import com.example.core_model.marvel.response.CharacterResponse
 import com.example.core_network.api.MarvelApi
@@ -15,8 +16,8 @@ class MarvelRepositoryImpl @Inject constructor(
 ) :
     MarvelRepository {
 
-    override fun getAllCharacters(offset: Int): Flow<CharacterResponse> = flow {
-        emit(marvelApi.getAllCharacters(offset))
+    override fun getAllCharacters(offset: Int, limit: Int): Flow<CharacterResponse> = flow {
+        emit(marvelApi.getAllCharacters(offset, limit))
     }
 
     override val bookmarkList: Flow<List<MarvelEntity>>
@@ -38,7 +39,3 @@ class MarvelRepositoryImpl @Inject constructor(
             false
         }
 }
-
-
-fun CharacterItem.asCharacterEntity(): MarvelEntity =
-    MarvelEntity(id, name, image, comics, series, stories, events, urls)
