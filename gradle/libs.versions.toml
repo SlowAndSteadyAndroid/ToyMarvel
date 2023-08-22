@@ -36,6 +36,9 @@ serializationConverter = "0.8.0"
 serializationJson = "1.3.2"
 swipeRefresh = "0.27.0"
 pager = "0.13.0"
+junit = "1.1.5"
+material = "1.9.0"
+constraintlayout = "2.1.4"
 
 [libraries]
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
@@ -93,6 +96,9 @@ serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-jso
 accompanist-swiperefresh = { group = "com.google.accompanist", name = "accompanist-swiperefresh", version.ref = "swipeRefresh" }
 accompanist-pager = {group = "com.google.accompanist", name = "accompanist-pager",version.ref = "pager" }
 accompanist-pager-indicators = {group = "com.google.accompanist", name = "accompanist-pager-indicators",version.ref = "pager" }
+junit = { group = "androidx.test.ext", name = "junit", version.ref = "junit" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
