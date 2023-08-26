@@ -9,6 +9,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.app_xml.databinding.ItemMavelCharacterBinding
 import com.example.app_xml.network.response.Result
+import com.example.app_xml.util.MediaUtil.Companion.saveToGallery
 
 
 class MarvelCharacterAdapter : RecyclerView.Adapter<MarvelCharacterViewHolder>() {
@@ -33,8 +34,6 @@ class MarvelCharacterAdapter : RecyclerView.Adapter<MarvelCharacterViewHolder>()
     }
 
     fun clear() = characterList.clear()
-
-
 }
 
 class MarvelCharacterViewHolder(private val binding: ItemMavelCharacterBinding) :
@@ -47,7 +46,6 @@ class MarvelCharacterViewHolder(private val binding: ItemMavelCharacterBinding) 
             .apply(RequestOptions.bitmapTransform(RoundedCorners(14)))
             .into(binding.ivCharacter)
 
-
         binding.tvName.text = item.name
         binding.tvComicsCnt.text = item.comics.items?.size?.toString() ?: "0"
         binding.tvEventCnt.text = item.events.items?.size?.toString() ?: "0"
@@ -56,14 +54,8 @@ class MarvelCharacterViewHolder(private val binding: ItemMavelCharacterBinding) 
         binding.tvStoriesCnt.text = item.stories.items?.size?.toString() ?: "0"
 
         binding.ivCharacter.setOnClickListener {
-            it.drawToBitmap()
-            saveImage(url)
+            binding.ivCharacter.drawToBitmap().saveToGallery(itemView.context)
         }
-
-    }
-
-    private fun saveImage(url: String) {
-        //포기!
     }
 }
 
